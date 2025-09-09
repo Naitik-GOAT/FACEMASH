@@ -14,7 +14,100 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      people: {
+        Row: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          losses: number
+          moderation_status: Database["public"]["Enums"]["moderation_status"]
+          name: string
+          photo_url: string
+          rating: number
+          total_votes: number
+          updated_at: string
+          wins: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          losses?: number
+          moderation_status?: Database["public"]["Enums"]["moderation_status"]
+          name: string
+          photo_url: string
+          rating?: number
+          total_votes?: number
+          updated_at?: string
+          wins?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          losses?: number
+          moderation_status?: Database["public"]["Enums"]["moderation_status"]
+          name?: string
+          photo_url?: string
+          rating?: number
+          total_votes?: number
+          updated_at?: string
+          wins?: number
+        }
+        Relationships: []
+      }
+      votes: {
+        Row: {
+          created_at: string
+          id: string
+          person1_id: string
+          person2_id: string
+          rating_change: number
+          session_id: string
+          winner_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          person1_id: string
+          person2_id: string
+          rating_change?: number
+          session_id: string
+          winner_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          person1_id?: string
+          person2_id?: string
+          rating_change?: number
+          session_id?: string
+          winner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_person1_id_fkey"
+            columns: ["person1_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_person2_id_fkey"
+            columns: ["person2_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +116,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      moderation_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +243,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      moderation_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
