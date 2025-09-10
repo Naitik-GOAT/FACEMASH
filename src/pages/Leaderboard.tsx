@@ -38,6 +38,14 @@ const Leaderboard = () => {
 
   useEffect(() => {
     fetchLeaderboard();
+    
+    // Refresh leaderboard when window gains focus
+    const handleFocus = () => {
+      fetchLeaderboard();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
   const getRankIcon = (index: number) => {

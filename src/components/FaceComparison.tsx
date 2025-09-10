@@ -53,21 +53,7 @@ const FaceComparison = () => {
       const shuffled = [...data].sort(() => 0.5 - Math.random());
       const selectedPeople: [Person, Person] = [shuffled[0], shuffled[1]];
       
-      // Check if this matchup has been voted on by this session
-      if (sessionId) {
-        const { data: existingVote } = await supabase
-          .from('votes')
-          .select('id')
-          .eq('session_id', sessionId)
-          .in('person1_id', [selectedPeople[0].id, selectedPeople[1].id])
-          .in('person2_id', [selectedPeople[0].id, selectedPeople[1].id]);
-        
-        if (existingVote && existingVote.length > 0) {
-          // Try again with different people
-          await fetchRandomPeople();
-          return;
-        }
-      }
+      // Removed spam protection - allow multiple votes per session
       
       setPeople(selectedPeople);
     } catch (error) {
