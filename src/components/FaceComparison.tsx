@@ -30,6 +30,7 @@ const FaceComparison = () => {
     try {
       setLoading(true);
       setWinner(null);
+      setVoting(false);
       
       // Get two random approved people
       const { data, error } = await supabase
