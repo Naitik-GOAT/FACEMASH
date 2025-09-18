@@ -39,13 +39,30 @@ const Leaderboard = () => {
   useEffect(() => {
     fetchLeaderboard();
     
+    // Set up real-time subscription for people updates
+    const channel = supabase
+      .channel('people-changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'people'
+      }, () => {
+        // Refresh leaderboard when any person data changes
+        fetchLeaderboard();
+      })
+      .subscribe();
+    
     // Refresh leaderboard when window gains focus
     const handleFocus = () => {
       fetchLeaderboard();
     };
     
     window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
+    
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   const getRankIcon = (index: number) => {
