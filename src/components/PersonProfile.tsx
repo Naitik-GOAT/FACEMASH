@@ -46,10 +46,22 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
     
     setLoading(true);
     try {
+      // First, get all people with the same name
+      const { data: peopleData, error: peopleError } = await supabase
+        .from('people')
+        .select('id')
+        .eq('name', person.name)
+        .eq('is_approved', true);
+
+      if (peopleError) throw peopleError;
+      
+      const personIds = peopleData?.map(p => p.id) || [person.id];
+      
+      // Then fetch photos for all people with this name
       const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .eq('person_id', person.id)
+        .in('person_id', personIds)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -72,9 +84,22 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
 
     setUploading(true);
     try {
+      // Get the primary person ID for this name (highest rated one)
+      const { data: peopleData, error: peopleError } = await supabase
+        .from('people')
+        .select('id, rating')
+        .eq('name', person.name)
+        .eq('is_approved', true)
+        .order('rating', { ascending: false })
+        .limit(1);
+
+      if (peopleError) throw peopleError;
+      
+      const primaryPersonId = peopleData?.[0]?.id || person.id;
+      
       // Upload to Supabase storage
       const fileExt = file.name.split('.').pop();
-      const fileName = `${person.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${person.name}/${Date.now()}.${fileExt}`;
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('person-photos')
@@ -87,11 +112,11 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
         .from('person-photos')
         .getPublicUrl(uploadData.path);
 
-      // Save to photos table
+      // Save to photos table using the primary person ID
       const { error: insertError } = await supabase
         .from('photos')
         .insert({
-          person_id: person.id,
+          person_id: primaryPersonId,
           image_url: publicUrl
         });
 

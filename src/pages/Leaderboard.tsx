@@ -27,11 +27,37 @@ const Leaderboard = () => {
         .from('people')
         .select('*')
         .eq('is_approved', true)
-        .order('rating', { ascending: false })
-        .limit(50);
+        .order('rating', { ascending: false });
 
       if (error) throw error;
-      setPeople(data || []);
+      
+      // Group people by name and consolidate their stats
+      const groupedPeople = (data || []).reduce((acc: Person[], person) => {
+        const existingPerson = acc.find(p => p.name === person.name);
+        
+        if (existingPerson) {
+          // Merge stats - use the person with higher rating as base
+          if (person.rating > existingPerson.rating) {
+            existingPerson.id = person.id;
+            existingPerson.photo_url = person.photo_url;
+            existingPerson.rating = person.rating;
+          }
+          existingPerson.total_votes += person.total_votes;
+          existingPerson.wins += person.wins;
+          existingPerson.losses += person.losses;
+        } else {
+          acc.push({ ...person });
+        }
+        
+        return acc;
+      }, []);
+      
+      // Sort by rating and limit to 50
+      const sortedPeople = groupedPeople
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 50);
+      
+      setPeople(sortedPeople);
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
     } finally {
