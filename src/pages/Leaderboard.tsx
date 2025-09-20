@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Trophy, Medal, Award } from 'lucide-react';
+import PersonProfile from '@/components/PersonProfile';
 
 interface Person {
   id: string;
@@ -17,6 +18,8 @@ import Navigation from "@/components/Navigation";
 const Leaderboard = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const fetchLeaderboard = async () => {
     try {
@@ -83,6 +86,16 @@ const Leaderboard = () => {
     return total > 0 ? ((wins / total) * 100).toFixed(1) : '0.0';
   };
 
+  const handlePersonClick = (person: Person) => {
+    setSelectedPerson(person);
+    setProfileOpen(true);
+  };
+
+  const handleProfileClose = () => {
+    setProfileOpen(false);
+    setSelectedPerson(null);
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -122,11 +135,14 @@ const Leaderboard = () => {
                       {getRankIcon(index)}
                     </div>
 
-                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-border">
+                    <div 
+                      className="w-16 h-16 rounded-full overflow-hidden border-2 border-border cursor-pointer hover:border-primary transition-colors"
+                      onClick={() => handlePersonClick(person)}
+                    >
                       <img
                         src={person.photo_url}
                         alt={person.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name)}&size=64&background=random`;
@@ -134,8 +150,11 @@ const Leaderboard = () => {
                       />
                     </div>
 
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{person.name}</h3>
+                    <div 
+                      className="flex-1 cursor-pointer"
+                      onClick={() => handlePersonClick(person)}
+                    >
+                      <h3 className="text-lg font-semibold hover:text-primary transition-colors">{person.name}</h3>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>Rating: <span className="font-semibold text-primary">{person.rating}</span></span>
                         <span>Votes: {person.total_votes}</span>
@@ -156,6 +175,12 @@ const Leaderboard = () => {
           </div>
         </div>
       </main>
+      
+      <PersonProfile 
+        person={selectedPerson}
+        isOpen={profileOpen}
+        onClose={handleProfileClose}
+      />
     </div>
   );
 };

@@ -56,6 +56,35 @@ export type Database = {
         }
         Relationships: []
       }
+      photos: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          person_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          person_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       votes: {
         Row: {
           created_at: string
