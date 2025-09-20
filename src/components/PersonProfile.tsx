@@ -33,6 +33,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showUploadForm, setShowUploadForm] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -129,6 +130,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
 
       // Refresh photos
       fetchPhotos();
+      setShowUploadForm(false);
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast({
@@ -166,41 +168,21 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
         </DialogHeader>
         
         <div className="overflow-y-auto flex-1">
-          {/* Upload Section */}
-          <div className="mb-6 p-4 border border-dashed border-border rounded-lg">
-            <div className="flex items-center gap-4">
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                disabled={uploading}
-                className="flex-1"
-                id="photo-upload"
-              />
-              <Button disabled={uploading} asChild>
-                <label htmlFor="photo-upload" className="cursor-pointer">
-                  <Upload className="h-4 w-4 mr-2" />
-                  {uploading ? 'Uploading...' : 'Add Photo'}
-                </label>
-              </Button>
-            </div>
-          </div>
-
           {/* Photos Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
               ))}
             </div>
           ) : photos.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 mb-6">
               <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No photos yet</h3>
-              <p className="text-muted-foreground">Upload the first photo for {person.name}</p>
+              <p className="text-muted-foreground mb-4">Be the first to add a photo for {person.name}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
               {photos.map((photo) => (
                 <div key={photo.id} className="aspect-square overflow-hidden rounded-lg bg-muted">
                   <img
@@ -211,6 +193,49 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
                   />
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Add Photo Button */}
+          {!showUploadForm && (
+            <div className="text-center">
+              <Button 
+                onClick={() => setShowUploadForm(true)} 
+                variant="outline" 
+                className="mb-4"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Add Photo
+              </Button>
+            </div>
+          )}
+
+          {/* Upload Form */}
+          {showUploadForm && (
+            <div className="p-4 border border-dashed border-border rounded-lg">
+              <div className="flex items-center gap-4">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  className="flex-1"
+                  id="photo-upload"
+                />
+                <Button disabled={uploading} asChild>
+                  <label htmlFor="photo-upload" className="cursor-pointer">
+                    <Upload className="h-4 w-4 mr-2" />
+                    {uploading ? 'Uploading...' : 'Upload'}
+                  </label>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setShowUploadForm(false)}
+                  disabled={uploading}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           )}
         </div>
