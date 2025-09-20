@@ -197,7 +197,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
           )}
 
           {/* Add Photo Button */}
-          {!showUploadForm && (
+          {!loading && !showUploadForm && (
             <div className="text-center">
               <Button 
                 onClick={() => setShowUploadForm(true)} 
