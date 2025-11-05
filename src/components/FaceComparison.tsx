@@ -50,11 +50,35 @@ const FaceComparison = () => {
         return;
       }
       
-      // Randomly select 2 different people
+      // Randomly select 2 different people with different names
       const shuffled = [...data].sort(() => 0.5 - Math.random());
-      const selectedPeople: [Person, Person] = [shuffled[0], shuffled[1]];
       
-      // Removed spam protection - allow multiple votes per session
+      // Find two people with different names
+      let person1: Person | null = null;
+      let person2: Person | null = null;
+      
+      for (let i = 0; i < shuffled.length; i++) {
+        if (!person1) {
+          person1 = shuffled[i];
+          continue;
+        }
+        
+        if (shuffled[i].name !== person1.name) {
+          person2 = shuffled[i];
+          break;
+        }
+      }
+      
+      if (!person1 || !person2) {
+        toast({
+          title: "Not enough unique people",
+          description: "We need at least 2 people with different names to compare!",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      const selectedPeople: [Person, Person] = [person1, person2];
       
       setPeople(selectedPeople);
     } catch (error) {
