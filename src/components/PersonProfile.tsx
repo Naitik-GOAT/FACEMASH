@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { Upload, ArrowLeft, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -149,7 +150,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={onClose}>
@@ -167,7 +168,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
           </Button>
         </DialogHeader>
         
-        <div className="overflow-y-auto flex-1">
+        <ScrollArea className="flex-1 pr-4">
           {/* Photos Grid */}
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
@@ -238,7 +239,7 @@ const PersonProfile = ({ person, isOpen, onClose }: PersonProfileProps) => {
               </div>
             </div>
           )}
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
