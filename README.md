@@ -52,19 +52,4 @@ Hosting
 
 Netlify/Vercel
 
-## 🗄 Database Structure (Supabase)
-### people table
-#### Column	Type	Description
 
-id	uuid	Primary key
-name	text	Person’s name
-rating	int	Current score
-created_at	timestamp	Created time
-### photos table
-#### Column	Type	Description
-id	uuid	Primary key
-person_id	uuid	References people.id
-image_url	text	Image stored in Supabase Storage
-created_at	timestamp	Upload time
-
-Each person can have multiple photos linked via person_id.
