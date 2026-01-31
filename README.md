@@ -1,10 +1,10 @@
-🥊 Face Mash 
+# Face Mash 
 
 A fun web app where two faces go head-to-head and users choose the winner. Each person has a dynamic rating that increases when they win matchups. Over time, the leaderboard ranks the highest-rated faces.
 
 Built with a modern web stack and powered by Supabase for real-time data and storage.
 
-🚀 Features
+## 🚀 Features
 
 ⚔️ Face Matchups – Two random faces appear, users vote for the better one
 
@@ -20,7 +20,7 @@ Built with a modern web stack and powered by Supabase for real-time data and sto
 
 ☁️ Supabase Backend – Database + image storage
 
-🧠 How It Works
+## 🧠 How It Works
 
 Two people are selected from the database.
 
@@ -32,7 +32,7 @@ The leaderboard updates based on ratings.
 
 Each person has a profile with a gallery of all their uploaded images.
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 
 Frontend
 
@@ -50,16 +50,16 @@ Supabase Storage (for image uploads)
 
 Hosting
 
-Netlify / Lovable deployment
+Netlify/Vercel
 
-🗄 Database Structure (Supabase)
-people table
+## 🗄 Database Structure (Supabase)
+### people table
 Column	Type	Description
 id	uuid	Primary key
 name	text	Person’s name
 rating	int	Current score
 created_at	timestamp	Created time
-photos table
+### photos table
 Column	Type	Description
 id	uuid	Primary key
 person_id	uuid	References people.id
@@ -68,7 +68,7 @@ created_at	timestamp	Upload time
 
 Each person can have multiple photos linked via person_id.
 
-📦 Installation (Local Development)
+### 📦 Installation (Local Development)
 git clone https://github.com/your-username/face-fight-club.git
 cd face-fight-club
 npm install
