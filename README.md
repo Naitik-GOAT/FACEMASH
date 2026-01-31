@@ -54,28 +54,17 @@ Netlify/Vercel
 
 ## 🗄 Database Structure (Supabase)
 ### people table
-Column	Type	Description
+#### Column	Type	Description
+
 id	uuid	Primary key
 name	text	Person’s name
 rating	int	Current score
 created_at	timestamp	Created time
 ### photos table
-Column	Type	Description
+#### Column	Type	Description
 id	uuid	Primary key
 person_id	uuid	References people.id
 image_url	text	Image stored in Supabase Storage
 created_at	timestamp	Upload time
 
 Each person can have multiple photos linked via person_id.
-
-### 📦 Installation (Local Development)
-git clone https://github.com/your-username/face-fight-club.git
-cd face-fight-club
-npm install
-npm run dev
-
-
-Create a .env file:
-
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_anon_key
