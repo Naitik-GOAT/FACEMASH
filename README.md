@@ -28,7 +28,7 @@ The user clicks the face they think should win.
 
 The winner’s rating increases.
 
-The leaderboard updates based on ratings.
+The leaderboard updates based on ratings
 
 Each person has a profile with a gallery of all their uploaded images.
 
